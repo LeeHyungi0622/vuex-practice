@@ -8,8 +8,10 @@
     <h4>
       Mutations에 등록된 변이 핸들러 method를 commit method를 통해 호출한다.
     </h4>
-    <button @click="$store.commit('increment', { amount: 3 })">증가</button>
-    <button @click="$store.commit('decrement', { amount: 3 })">감소</button>
+    store를 Module별로 분리를 한 후에 분리된 module에서 mutations으로 정의된 method에 접근하기 위해서는<br/>
+    module_name/mutation_method_name으로 commit을 통해 호출해야한다.(namespace 적용했기 때문에)<br/>
+    <button @click="$store.commit('counter/INCREMENT', { amount: 3 })">증가</button>
+    <button @click="$store.commit('counter/DECREMENT', { amount: 3 })">감소</button>
     {{ count }}
     <p>a: {{ countObj.a }}</p>
     <p>b: {{ countObj.b }}</p>
@@ -19,6 +21,9 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex';
+const { mapState } = createNamespacedHelpers("counter");
+
 export default {
   name: "App",
   data() {
@@ -43,29 +48,7 @@ export default {
       // count 상태값이 변경되면, 자동으로 계산된 속성이 변경되고, 관련 DOM이 업데이트
       return this.$store.state.count;
     },
+    ...mapState(["count"]),
   },
 };
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
